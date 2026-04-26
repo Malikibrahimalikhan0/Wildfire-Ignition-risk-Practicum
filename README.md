@@ -1,4 +1,4 @@
-# Wildfire Ignition Risk Ranking Using Climate Data
+# Wildfire Ignition Risk Prediction (Colorado)
 
 This repository contains the complete code, analysis, visualizations, and final report for my Data Science Practicum project.
 
