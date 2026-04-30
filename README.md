@@ -50,17 +50,17 @@ Models were trained on data from 2018–2022 and evaluated on 2023 to assess tem
 ## Repository Structure
 The repository is organized as follows:
 Data/
-├── README.md              # Instructions for accessing wildfire and climate datasets
+├── README.md              
 Notebooks/
 ├── 01_data_acquisition_and_eda.ipynb
 ├── 02_feature_engineering.ipynb
 ├── Model_Training_And_Evaluation.ipynb
 Report/
-├── README.md              # Practicum report folder
+├── README.md              
 ├── Wildfire_Ignition_Risk_Ranking.tex
 ├── references.bib
 Src/
-├── README.md              # Supporting utility scripts (if applicable)
+├── README.md              
 Figures/
-├── README.md              # Figures used in the report and analysis
-requirements.txt           # Python dependencies
+├── README.md              
+requirements.txt           
