@@ -47,20 +47,28 @@ Models were trained on data from 2018–2022 and evaluated on 2023 to assess tem
 
 ---
 
-## Repository Structure
-The repository is organized as follows:
-Data/
-├── README.md              
-Notebooks/
-├── 01_data_acquisition_and_eda.ipynb
-├── 02_feature_engineering.ipynb
-├── Model_Training_And_Evaluation.ipynb
-Report/
-├── README.md              
-├── Wildfire_Ignition_Risk_Ranking.tex
-├── references.bib
-Src/
-├── README.md              
-Figures/
-├── README.md              
-requirements.txt           
+Wildfire-Ignition-Risk-Practicum/
+│
+├── data/                     
+│   └── README.md             
+│
+├── notebooks/                
+│   ├── 01_data_acquisition_eda.ipynb
+│   ├── 02_feature_engineering.ipynb
+│   ├── 03_modeling.ipynb
+│
+├── src/                      
+│   └── README.md
+│
+├── figures/                 
+│   ├── gradient_boosting.png
+│   ├── high_risk_locations.png
+│   └── README.md
+│
+├── report/                  
+│   ├── wildfire_risk.tex
+│   ├── references.bib
+│   └── README.md
+│
+├── requirements.txt          
+├── README.md               
