@@ -1,74 +1,119 @@
 # Wildfire Ignition Risk Prediction (Colorado)
 
-This repository contains the complete code, analysis, visualizations, and final report for my Data Science Practicum project.
+## Overview
 
-Wildfires are a major environmental and public safety concern in Colorado, where ignition events are strongly influenced by climate and weather conditions. Predicting the exact time and location of wildfire ignitions is extremely difficult because these events are rare and depend on complex environmental factors. Instead of focusing on exact prediction, this project treats wildfire ignition as a **risk‑ranking problem**, with the goal of identifying locations that are relatively more prone to ignition under certain climate conditions.
+This project models wildfire ignition risk across Colorado using climate, spatial, and machine learning techniques.
 
-The objective of this project is to use climate data and machine learning models to rank locations in Colorado by wildfire ignition risk in a way that is practical, interpretable, and able to generalize to unseen future data.
+Instead of predicting wildfire events directly, the problem is framed as a **risk-ranking task**, where geographic locations are prioritized based on wildfire risk.
 
----
-
-## Project Summary
-- **Study area:** Colorado  
-- **Time period:** 2018–2023  
-- **Problem type:** Rare‑event risk ranking  
-- **Approach:** Climate‑based machine learning models  
-- **Outcome:** High‑risk locations identified by the model capture a disproportionate share of wildfire ignitions  
-
-This project emphasizes decision support rather than exact prediction, which better aligns with real‑world wildfire monitoring and resource prioritization.
+The objective is to identify high-risk areas that account for a large proportion of wildfire events and support decision-making for monitoring and resource allocation.
 
 ---
 
 ## Data Sources
-The project uses publicly available datasets that are commonly used in wildfire and climate research:
 
-- **NASA MODIS FIRMS**  
-  Satellite‑detected wildfire ignition locations derived from thermal anomaly observations.  
-  Data access details are described in `Data/README.md`.
+- MODIS FIRMS – satellite-based wildfire detections  
+- gridMET – daily climate data (temperature, precipitation)  
+- NLCD – vegetation / fuel data  
+- Road network data – proxy for human activity  
 
-- **gridMET Climate Data**  
-  Daily gridded climate variables including precipitation and temperature at high spatial resolution.  
-  Data access details are described in `Data/README.md`.
-
-Due to data size constraints, raw datasets are not stored directly in this repository.
+**Time Range:** 2018–2023  
+**Resolution:** Daily grid-level observations  
 
 ---
 
-## Methods Overview
-The project follows a structured data science workflow designed to handle large datasets and extreme class imbalance:
+## Project Pipeline
 
-- Data acquisition and preprocessing (`Notebooks/01_data_acquisition_and_eda.ipynb`)  
-- Exploratory data analysis to examine rarity, seasonality, and climate relationships  
-- Feature engineering, including lagged precipitation, rolling precipitation sums, and seasonal indicators (`Notebooks/02_feature_engineering.ipynb`)  
-- Model training using Logistic Regression, Gradient Boosting, Random Forest, and XGBoost (`Notebooks/Model_Training_And_Evaluation.ipynb`)  
-- Evaluation using risk‑ranking metrics on an unseen test year (2023)  
+1. Data Preparation  
+   - Subset climate data for Colorado  
+   - Process and align spatial wildfire data  
 
-Models were trained on data from 2018–2022 and evaluated on 2023 to assess temporal generalization.
+2. Label Generation  
+   - Generate daily wildfire occurrence labels  
+   - Validate label quality  
+
+3. Feature Engineering  
+   - Temporal features (lag, rolling precipitation)  
+   - Seasonal features (day-of-year)  
+   - Spatial features (fuel presence, distance to roads)  
+
+4. Modeling  
+   - Logistic Regression (baseline)  
+   - Random Forest  
+   - Gradient Boosting  
+   - XGBoost  
+
+5. Evaluation  
+   - ROC-AUC (ranking performance)  
+   - Risk-based evaluation (top-k fire capture)  
+
+6. Dashboard  
+   - Interactive visualization of wildfire risk  
+   - Highlights high-risk regions over time  
 
 ---
 
-Wildfire-Ignition-Risk-Practicum/
-│
-├── data/                     
-│   └── README.md             
-│
-├── notebooks/                
-│   ├── 01_data_acquisition_eda.ipynb
-│   ├── 02_feature_engineering.ipynb
-│   ├── 03_modeling.ipynb
-│
-├── src/                      
-│   └── README.md
-│
-├── figures/                 
-│   ├── gradient_boosting.png
-│   ├── high_risk_locations.png
-│   └── README.md
-│
-├── report/                  
-│   ├── wildfire_risk.tex
-│   ├── references.bib
-│   └── README.md
-│
-├── requirements.txt          
-├── README.md               
+## Notebooks
+
+- **01_gridmet_data_subsetting.ipynb**  
+  Prepares climate data for Colorado region  
+
+- **02_fire_label_generation.ipynb**  
+  Generates wildfire occurrence labels from MODIS data  
+
+- **02_fire_label_validation.ipynb**  
+  Validates and debugs wildfire labels  
+
+- **03_feature_engineering_road_distance.ipynb**  
+  Computes distance-to-road feature  
+
+- **04_feature_engineering_vegetation.ipynb**  
+  Extracts vegetation / fuel features  
+
+- **05_feature_engineering_temporal_base.ipynb**  
+  Creates lag and rolling climate features  
+
+- **06_feature_engineering_full_dataset.ipynb**  
+  Combines temporal and spatial features into final dataset  
+
+- **07_modeling_and_dashboard_preparation.ipynb**  
+  Trains models, evaluates performance, and prepares dashboard data  
+
+---
+
+## Key Results
+
+- Tree-based models outperform linear models  
+- XGBoost achieves highest ROC-AUC (~0.71)  
+- Top 20% high-risk locations capture over 50% of wildfire events  
+- Demonstrates strong effectiveness of risk-ranking approach  
+
+---
+
+## Interactive Dashboard
+
+The final output includes an interactive dashboard for visualizing wildfire risk across Colorado.
+
+Features:
+- Daily risk visualization  
+- Top 5%, 10%, 20% high-risk areas  
+- Spatial and temporal exploration  
+
+**Live Demo:**  
+https://meek-fairy-c16886.netlify.app/
+
+---
+
+## Technologies Used
+
+- Python (Pandas, NumPy)
+- GeoPandas / Rasterio
+- Scikit-learn
+- XGBoost
+- Matplotlib / Seaborn
+
+---
+
+## Project Objective
+
+Identify high-risk wildfire regions and support decision-making using data-driven risk ranking instead of traditional classification.
