@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Colorado Wildfire Risk Dashboard</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+body { margin:0; font-family: Arial; }
+
+#header {
+    background:#111;
+    color:white;
+    padding:14px;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+#controls {
+    background:#f8f8f8;
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid #ccc;
+}
+
+#map { height:85vh; }
+
+#legend {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: white;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    z-index: 1000;
+    max-width: 200px;
+}
+
+#legend div { margin-bottom: 8px; }
+
+.legend-box {
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.color {
+    width:16px;
+    height:16px;
+    border-radius:3px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="header">
+ Colorado Wildfire Risk Dashboard (2018–2023)
+</div>
+
+<div id="controls">
+<label>Select Date:</label>
+<input type="date" id="dateInput">
+<button onclick="resetMap()">Clear</button>
+</div>
+
+<div id="map"></div>
+
+<div id="legend">
+<b>Risk Priority Zones</b>
+
+<div class="legend-box">
+<div class="color" style="background:#ff0000"></div>
+Top 5% (Critical)
+</div>
+
+<div class="legend-box">
+<div class="color" style="background:#ff7f00"></div>
+Top 10% (High)
+</div>
+
+<div class="legend-box">
+<div class="color" style="background:#ffd700"></div>
+Top 20% (Moderate)
+</div>
+
+<small>
+Higher tiers = higher wildfire likelihood
+</small>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+
+const map = L.map('map').setView([38.83, -104.82], 7);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+.addTo(map);
+
+let allData = [];
+let layerGroup = L.layerGroup().addTo(map);
+
+
+fetch('dashboard_risk.csv')
+.then(res => res.text())
+.then(csv => {
+
+    const rows = csv.trim().split("\n");
+
+    for (let i = 1; i < rows.length; i++) {
+
+        let parts = rows[i].split(",");
+
+        if (parts.length < 5) continue;
+
+        let lat = parseFloat(parts[0]);
+        let lon = parseFloat(parts[1]);
+        let risk = parseFloat(parts[2]);
+        let day = parts[3].trim();
+        let tier = parts[4].trim();
+
+        if (!isNaN(lat) && !isNaN(lon)) {
+            allData.push({lat, lon, risk, day, tier});
+        }
+    }
+
+    console.log(" Data loaded but not rendered");
+
+});
+
+function drawMap(data) {
+
+    layerGroup.clearLayers();
+
+    data.forEach(d => {
+
+        let color, fill, radius;
+
+        if (d.tier === "Top 5%") {
+            color = "#ff0000";       // strong red
+            fill = "#ff4d4d";
+            radius = 4500;
+        } 
+        else if (d.tier === "Top 10%") {
+            color = "#ff7f00";       // bright orange
+            fill = "#ffa64d";
+            radius = 3500;
+        } 
+        else {
+            color = "#ffd700";       // gold
+            fill = "#fff066";
+            radius = 2500;
+        }
+
+        let circle = L.circle([d.lat, d.lon], {
+            radius: radius,
+            color: color,
+            weight: 2,         
+            fillColor: fill,
+            fillOpacity: 0.6  
+        });
+
+        circle.bindTooltip(`
+            <b>Risk:</b> ${d.risk.toExponential(3)}<br>
+            <b>Date:</b> ${d.day}<br>
+            <b>Tier:</b> ${d.tier}
+        `);
+
+        layerGroup.addLayer(circle);
+    });
+}
+
+document.getElementById('dateInput').addEventListener('change', function() {
+
+    let selected = this.value;
+
+    if (!selected) return;
+
+    let filtered = allData.filter(d => d.day === selected);
+
+    console.log("Filtered:", filtered.length);
+
+    if (filtered.length === 0) {
+        alert("No data for this date");
+        return;
+    }
+
+    drawMap(filtered);
+});
+
+function resetMap() {
+    layerGroup.clearLayers();
+    document.getElementById('dateInput').value = '';
+}
+
+</script>
+
+</body>
+</html>
