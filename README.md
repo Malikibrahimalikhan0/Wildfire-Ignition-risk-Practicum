@@ -90,14 +90,17 @@ The objective is to identify high-risk areas that account for a large proportion
 
 ---
 
-## Interactive Dashboard
 
-The final output includes an interactive dashboard for visualizing wildfire risk across Colorado.
+The final model outputs are transformed into a filtered dataset containing top-risk locations.
 
-Features:
-- Daily risk visualization  
-- Top 5%, 10%, 20% high-risk areas  
-- Spatial and temporal exploration  
+Steps:
+- Generate risk scores using trained model
+- Select top N high-risk locations per day
+- Assign risk tiers (Top 5%, 10%, 20%)
+- Export dataset for visualization
+
+This dataset is used in the interactive dashboard.
+
 
 **Live Demo:**  
 https://meek-fairy-c16886.netlify.app/
